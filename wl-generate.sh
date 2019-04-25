@@ -191,9 +191,9 @@ echo "> Installing dependencies..."
 pushd "./${WL_DIR_NAME}" > /dev/null
 
 # while true; do
-    read -p "Do you wish to install Navigation(react-navigation 3)? [y/n]" yn 
+    read -p "Do you wish to install Redux? [y/n]" yn 
     case $yn in
-        [Yy]* ) npm install react-navigation --silent && npm install --silent break;;
+        [Yy]* ) npm install react-redux redux --silent && npm install --silent break;;
         [Nn]* ) npm install --silent > /dev/null 2> /dev/null exit;;
         * ) echo "Please answer yes or no.";;
     esac

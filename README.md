@@ -153,12 +153,17 @@ on `whitelabel`, with a particular configuration, display name and bundle id.
 This allows to install on the same device multiple applications originating from
 the `whitelabel` one.
 
-The generation can be done with
+The generation can be done with bash
 ```
 ./wl-generate.sh -a test -d "Test" -b com.test -m Home,About,Contact -t solarized-light
+
+```
+or Node
+```
+wl-generate --pname=test --dname="Biffs App" --bundle="com.biff" --mods=\['Home','About'\] --theme=solarized-light
 ```
 
-and will procude a new directory (or override the existing) `app-<name>`. In our
+and will produce a new directory (or override the existing) `app-<name>`. In our
 example, it will generate directory `app-test`. The script supports the
 following flags
 * `a`: Name of the project to generate for `-a name`, the project `app-name`

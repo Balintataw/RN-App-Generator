@@ -1,0 +1,32 @@
+{
+  "name": "rn_app_whitelabel",
+  "version": "1.0.0",
+  "description": "Skeleton project for creating a white-label application with React Native.",
+  "main": "cli.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Balintataw/RN-App-Generator.git"
+  },
+  "keywords": [
+    "react-native"
+  ],
+  "author": "Jossendal Development",
+  "license": "Apache-2.0",
+  "bin": {
+    "wl-generate": "./cli.js"
+  },
+  "bugs": {
+    "url": "https://github.com/Balintataw/RN-App-Generator/issues"
+  },
+  "homepage": "https://github.com/Balintataw/RN-App-Generator#readme",
+  "dependencies": {
+    "cli-spinner": "^0.2.10",
+    "fs-extra": "^7.0.1",
+    "inquirer": "^6.3.1",
+    "replace-in-file": "^4.0.0",
+    "yargs": "^13.2.2"
+  }
+}
