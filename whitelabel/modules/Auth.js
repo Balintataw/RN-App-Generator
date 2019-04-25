@@ -3,14 +3,14 @@ import { Text, View } from 'react-native';
 
 const styles = require('../themes')('Module');
 
-const AboutComponent = () => (
+const AuthComponent = () => (
     <View style={styles.container}>
       <Text style={styles.text}>
-        Module <Text style={styles.accent}>About</Text>
+        Module <Text style={styles.accent}>Auth</Text>
       </Text>
     </View>
 );
 export default {
-    name: 'About',
-    Component: AboutComponent,
+    name: 'Auth',
+    Component: AuthComponent,
 };

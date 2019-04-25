@@ -120,9 +120,11 @@ const help = function() {
             --mods [module1,module2,...,moduleN]
                 List of modules to be used in the app, separated by commas (','). At
                 least one must be provided.
+                Current options: Auth, Home, About, Contact
 
             --theme [theme]
                 Name of the theme to be used in the app.
+                Current options: solarized-light, solarized-dark
         `)
     process.exit(0)
 }

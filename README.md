@@ -1,6 +1,6 @@
 # React Native White-label
 
-Skeleton project for creating a white-label application with React Native.
+Scaffolding project for creating a white-label application generator with React Native.
 
 ## About
 
@@ -158,26 +158,27 @@ The generation can be done with bash
 ./wl-generate.sh -a test -d "Test" -b com.test -m Home,About,Contact -t solarized-light
 
 ```
-or Node
+or Node (recommended)
 ```
-wl-generate --pname=test --dname="Biffs App" --bundle="com.biff" --mods=\['Home','About'\] --theme=solarized-light
+wl-generate --aname=test --dname="Test" --bundle="com.test" --mods=\['Home','About'\] --theme=solarized-light
 ```
 
 and will produce a new directory (or override the existing) `app-<name>`. In our
 example, it will generate directory `app-test`. The script supports the
 following flags
-* `a`: Name of the project to generate for `-a name`, the project `app-name`
+* `--h`: Display Options.
+* `--aname`: Name of the project to generate for `-a name`, the project `app-name`
 will be created. It cannot be `whitelabel`.
-* `d`: Display name for the application, will be visible under the app icon on
+* `--dname`: Display name for the application, will be visible under the app icon on
 the device.
-* `b`: Bundle identifier for the app. It must consist of dot-separated
+* `--bundle`: Bundle identifier for the app. It must consist of dot-separated
 alpha-numeric characters. It should be unique for every application and it
 should not be `com.whitelabel` (the default for the `whitelabel` project), or
 two app may clash.
-* `m`: List of comma-separated modules to be used. These modules must be present
+* `--mods`: List of comma-separated modules to be used. These modules must be present
 in the `modules` directory. The order provided is the order with which modules
 will be exported, so `-m Home,About` is different from `-m About,Home`.
-* `t`: Theme to use in the app. It must be one present in the `theme` directory.
+* `--theme`: Theme to use in the app. It must be one present in the `theme` directory.
 
 ## Comments
 
