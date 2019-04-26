@@ -120,10 +120,10 @@ const TabNavigator = createBottomTabNavigator(
           },
         }),
         tabBarOptions: {
-            activeTintColor: () => EStyleSheet.value('$primaryText'),
-            activeBackgroundColor: () => EStyleSheet.value('$accentColor'),
-            inactiveTintColor: () => EStyleSheet.value('$accentColor'),
-            inactiveBackgroundColor: () => EStyleSheet.value('$primaryText'),
+            activeTintColor: EStyleSheet.value('$primaryText'),
+            activeBackgroundColor: EStyleSheet.value('$accentColor'),
+            inactiveTintColor: EStyleSheet.value('$accentColor'),
+            inactiveBackgroundColor: EStyleSheet.value('$primaryText'),
             showIcon: true,
             labelStyle: {
                 fontSize: 12,
