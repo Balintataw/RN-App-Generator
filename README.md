@@ -160,7 +160,7 @@ The generation can be done with bash
 ```
 or Node (recommended)
 ```
-wl-generate --aname=test --dname="Test" --bundle="com.test" --mods=\['Home','About'\] --theme=solarized-light
+wl-generate --aname=test --dname="Test" --bundle="com.test" --mods=Home,About --theme=solarized-light
 ```
 
 and will produce a new directory (or override the existing) `app-<name>`. In our

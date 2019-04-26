@@ -18,7 +18,7 @@ const BRED = '\033[1;31m'     // BoldRed
 const WIPE = '\033[1m\033[0m' // wipe color
 
 let HELP = argv.h;
-let WL_APP_NAME = argv.pname; 
+let WL_APP_NAME = argv.aname; 
 let WL_BUNDLE_ID = argv.bundle; 
 let WL_DISPLAY_NAME = argv.dname; 
 let WL_MODULES = argv.mods; 
@@ -96,7 +96,7 @@ const help = function() {
 	console.log(`
         Usage: wl-generate [flags]
 
-        Example: wl-generate --aname=test --bundle=com.test --dname="Test App" --mods=\[Foo,Bar\] --theme=solarized-dark
+        Example: wl-generate --aname=test --bundle=com.test --dname="Test App" --mods=Home,About,Contact --theme=solarized-dark
 
         Description:
 
