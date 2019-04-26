@@ -1,6 +1,6 @@
-import { StyleSheet } from 'react-native';
+import EStyleSheet from 'react-native-extended-stylesheet';
 
-export default StyleSheet.create({
+export default EStyleSheet.create({
     container: {
         // height: 100,
         // borderWidth: 1,
@@ -10,13 +10,13 @@ export default StyleSheet.create({
         alignItems: 'center',
         flex: 1,
         justifyContent: 'center',
-        backgroundColor: '#002b36'
+        backgroundColor: '$primaryColor'
     },
     text: {
-        color: '#657b83',
+        color: '$primaryText',
     },
     accent: {
-        color: '#268bd2',
+        color: '$accentColor',
         fontWeight: 'bold',
     },
 });

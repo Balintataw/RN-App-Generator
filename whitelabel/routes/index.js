@@ -1,25 +1,23 @@
 import React from 'react';
-import { StatusBar, Easing, Animated } from 'react-native';
-import { createStackNavigator, createAppContainer, createSwitchNavigator } from 'react-navigation';
+import { Easing, Animated } from 'react-native';
+import { createAppContainer, createSwitchNavigator, createBottomTabNavigator, } from 'react-navigation';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import EStyleSheet from 'react-native-extended-stylesheet';
 
 import modules from '../modules'
 
-    const appStackConfig = {}
-    modules.forEach(({name, Component}) => {
-        appStackConfig[name] = {
-            screen: Component,
-            navigationOptions: {
-                header: () => null
-            }
+const styles = require('../themes')('App');
 
-        }
-        // a[name] = {
-        //     screen: Component,
-        //     navigationOptions: {
-        //         header: () => null
-        //     }
+const appStackConfig = {}
+modules.forEach(({name, Component}) => {
+    appStackConfig[name] = {
+        screen: Component,
+        // navigationOptions: {
+        //     header: () => null
         // }
-    })
+
+    }
+})
 
 const transitionConfig = () => {
     return {
@@ -82,47 +80,6 @@ const transitionConfig = () => {
 //     }
 // );
 
-const AppStack = createStackNavigator(
-        {...appStackConfig}, 
-        {
-            mode: 'modal',
-            headerMode: 'screen',
-            cardStyle: { paddingTop: StatusBar.currentHeight },
-            initialRouteName: 'Home',
-            transitionConfig,
-        }
-);
-// const AppStack = createStackNavigator(
-//     {
-//         Home: {
-//             screen: Home,
-//             navigationOptions: {
-//                 header: () => null
-//             }
-//         },
-//         Breathe: {
-//             screen: Breather,
-//             navigationOptions: {
-//                 header: () => null
-//             }
-//         },
-//         Audio: {
-//             screen: Audio,
-//             // screen: PlayerScreen,
-//             navigationOptions: {
-//                 header: () => null
-//             }
-//         }
-//     },
-//     {
-//         // mode: 'modal',
-//         // headerMode: 'screen',
-//         // cardStyle: { paddingTop: StatusBar.currentHeight },
-//         initialRouteName: 'Home',
-//         transitionConfig,
-//     }
-// );
-
 // const AppNavigator = createSwitchNavigator(
 //     {
 //         AuthLoading: Loading,
@@ -138,4 +95,44 @@ const AppStack = createStackNavigator(
 //     }
 // );
 
-export default createAppContainer(AppStack);
+const TabNavigator = createBottomTabNavigator(
+    {...appStackConfig},
+    {
+        defaultNavigationOptions: ({ navigation }) => ({
+          tabBarIcon: ({ focused, horizontal, tintColor }) => {
+            const { routeName } = navigation.state;
+            let IconComponent = Ionicons;
+            let iconName;
+            if (routeName === 'Home') {
+              iconName = `ios-home`;
+              // Sometimes we want to add badges to some icons. 
+              // You can check the implementation below.
+            //   IconComponent = HomeIconWithBadge; 
+            } else if (routeName === 'About') {
+              iconName = `ios-options`;
+            } else {
+              iconName = `ios-search`;
+            }
+    
+            // You can return any component that you like here!
+            return <IconComponent name={iconName} size={25} color={tintColor} />;
+          },
+        }),
+        tabBarOptions: {
+            activeTintColor: EStyleSheet.value('$primaryText'),
+            activeBackgroundColor: EStyleSheet.value('$accentColor'),
+            inactiveTintColor: EStyleSheet.value('$accentColor'),
+            inactiveBackgroundColor: EStyleSheet.value('$primaryText'),
+            showIcon: true,
+            labelStyle: {
+                fontSize: 12,
+            },
+            style: {
+                backgroundColor: 'blue',
+            },
+        },
+    }
+);
+  
+export default createAppContainer(TabNavigator);
+// export default createAppContainer(AppStack);

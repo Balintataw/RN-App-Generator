@@ -296,19 +296,19 @@ let installDependencies = async () => {
                 default: 'n',
                 validate: validateResponse
             },
-            {
-                type: "confirm",
-                name: "stylesheet",
-                message: "Do you want to install Extended Style Sheet? [y/n]",
-                choices: ['y','n'],
-                default: 'n',
-                validate: validateResponse
-            }
+            // {
+            //     type: "confirm",
+            //     name: "stylesheet",
+            //     message: "Do you want to install Extended Style Sheet? [y/n]",
+            //     choices: ['y','n'],
+            //     default: 'n',
+            //     validate: validateResponse
+            // }
         ]);
 
     console.log(`Installing dependencies...`);
     if(answers.redux) {command += ` && npm install --silent redux react-redux`};
-    if(answers.stylesheet) {command += ` && npm install --silent react-native-extended-stylesheet`};
+    // if(answers.stylesheet) {command += ` && npm install --silent react-native-extended-stylesheet`};
     try {
         await exec(` cd ${WL_DIR_NAME} && ${command}`);
         console.log(BGREEN, 'Setup complete!', WIPE, '\nIf you installed any packages you may need to link them. See documentation for details.');
