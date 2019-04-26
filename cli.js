@@ -6,12 +6,7 @@ const exec = util.promisify(require('child_process').exec);
 const execSync = require('child_process').execSync;
 const argv = require('yargs').argv;
 const Spinner = require('cli-spinner').Spinner;
-// const readline = require('readline').createInterface({
-//     input: process.stdin,
-//     output: process.stdout
-// });
 const inquirer = require('inquirer');
-
 
 const BGREEN = '\033[1;32m'   // BoldGreen
 const BRED = '\033[1;31m'     // BoldRed
@@ -25,8 +20,6 @@ let WL_MODULES = argv.mods;
 let WL_THEME = argv.theme; 
 let WL_DIR_NAME = `app-${WL_APP_NAME}`;
 let WL_BUNDLE_PATH = '';
-
-// console.log(HELP, WL_APP_NAME, WL_BUNDLE_ID, WL_DISPLAY_NAME, WL_MODULES, WL_THEME, WL_DIR_NAME)
 
 // ------------------------------------------------------------------------------
 // UTILITIES
@@ -273,12 +266,51 @@ let moveBundleFiles = async () => {
     try {
         await exec(`rm -rf ./${WL_DIR_NAME}/android/app/src/main/java/com/whitelabel/`);
         console.log(BGREEN, `Removed${WIPE} ./${WL_DIR_NAME}/android/app/src/main/java/com/whitelabel/`);
-        installDependencies();
+        chooseLayout();
     } catch(error) {
         console.error(`${BRED}exec error: ${error}${WIPE}`);
     } finally {
     }
 };
+// ------------------------------------------------------------------------------
+// CHOOSE LAYOUT
+// ------------------------------------------------------------------------------
+
+let chooseLayout = async () => {
+    let command = '';
+
+    const answers = await inquirer.prompt([
+            {
+                type: "list",
+                name: "layout",
+                message: "Choose an initial layout",
+                choices: [ 'Drawer', 'Bottom Tabs' ],
+                validate: (layouts) => {
+                    return layouts.length === 1 || "Only one layout can be selected"
+                }
+            },
+        ]);
+
+    console.log(`Installing selected layout...`);
+    if(answers.layout === 'Drawer') {
+        // remove existing index.js in routes folder
+        // add Drawer nav in its place and rename to index.js
+        await exec(`rm ./${WL_DIR_NAME}/routes/index.js`);
+        copyFiles(
+            `./${WL_DIR_NAME}/routers/drawerNav.js`,
+            `./${WL_DIR_NAME}/routes/index.js`,
+            () => installDependencies());
+    };
+    if(answers.layout === 'Bottom Tabs') {
+        // remove existing index.js in routes folder
+        // add Tabs nav in its place and rename to index.js
+        await exec(`rm ./${WL_DIR_NAME}/routes/index.js`);
+        copyFiles(
+            `./${WL_DIR_NAME}/routers/bottomTabsNav.js`,
+            `./${WL_DIR_NAME}/routes/index.js`,
+            () => installDependencies());
+    };
+}
 
 // ------------------------------------------------------------------------------
 // INSTALL DEPENDENCIES
