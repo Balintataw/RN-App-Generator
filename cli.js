@@ -1,4 +1,8 @@
 #!/usr/bin/env node
+// TODOS
+// Clone to parent directory or give an option
+// Remove dead or unused files after completion
+// Update help menu 
 const fs = require('fs-extra');
 const replace = require('replace-in-file');
 const util = require('util');
@@ -10,7 +14,7 @@ const inquirer = require('inquirer');
 const git = require('simple-git/promise');
 const figlet = require('figlet');
 
-const remote = 'git@github.com:Balintataw/RN-App-Generator-Whitelabel.git';
+const REMOTE = 'git@github.com:Balintataw/RN-App-Generator-Whitelabel.git';
 const BGREEN = '\033[1;32m'   // BoldGreen
 const BRED = '\033[1;31m'     // BoldRed
 const WIPE = '\033[1m\033[0m' // wipe color
@@ -28,19 +32,10 @@ let WL_BUNDLE_PATH = '';
 // UTILITIES
 // ------------------------------------------------------------------------------
  
-// spinner is async and most of my commands are sync
-const spinner = new Spinner('processing.. %s');
+// use spinner.start() / spinner.stop()
+const spinner = new Spinner('Processing.. %s');
 const anim = '|/-\\';
 spinner.setSpinnerString(anim);
-
-// var twirlTimer = function() {
-//     var P = ["\\", "|", "/", "-"];
-//     var x = 0;
-//     return setInterval(function() {
-//         process.stdout.write("\r" + P[x++]);
-//         x &= 3;
-//     }, 250);
-// };
 
 const replaceStringInFiles = async (files = [], source, destination, next) => {
     const replaceOptions = {
@@ -62,7 +57,7 @@ const replaceStringInFiles = async (files = [], source, destination, next) => {
 async function cloneDir(next) {
     try {
         spinner.start()
-        await git().clone(remote, WL_DIR_NAME)
+        await git().clone(REMOTE, WL_DIR_NAME)
         console.log(BGREEN, 'Clone Successful!', WIPE);
     } catch(err) {
         console.error(BRED, err, WIPE);
@@ -94,15 +89,15 @@ async function moveFiles (source, destination, next) {
 function validateResponse(val) {
     let isValid =  ['Y','y', 'N', 'n'].includes(val)
     return isValid || "Please enter [Y/y,N/n]!";
-}
+};
 function validateInput(val) {
     let isValid = val.length > 0;
     return isValid || "Value cannot be blank.";
-}
+};
 function validateBundleId(val) {
     let isValid = val.includes('com')
-    return isValid || "Bundle id should be formatted like 'com.app-name'";
-}
+    return isValid || "Bundle id should be formatted like 'com.<app-name>'";
+};
 
 // ------------------------------------------------------------------------------
 // PRINT HELP
@@ -147,21 +142,7 @@ const help = function() {
 if (!!HELP) {help()}
 
 // -------------------------------------------------------------
-// WRONG ARGUMENT ERRORS
-// -------------------------------------------------------------
-
-// if(WL_APP_NAME === 'whitelabel') {
-//     console.log(BRED, "pname (app name) cannot be 'whitelabel'", WIPE);
-//     process.exit(1);
-// }
-// if(!WL_APP_NAME) {console.log("Missing app name (--aname) \nRun 'wl-generate -h' for help"); process.exit(1)};
-// if(!WL_BUNDLE_ID) {console.log("Missing bundle id (--bundle) \nRun 'wl-generate -h' for help"); process.exit(1)};
-// if(!WL_DISPLAY_NAME) {console.log("Missing display name (--dname) \nRun 'wl-generate -h' for help"); process.exit(1)};
-// if(!WL_MODULES) {console.log("Missing modules (--mods) \nRun 'wl-generate -h' for help"); process.exit(1)};
-// if(!WL_THEME) {console.log("Missing theme (--theme) \nRun 'wl-generate -h' for help"); process.exit(1)};
-
-// -------------------------------------------------------------
-//  CLONE WHITELABEL DIRECTORY
+//  GET USER DEFINED VARIABLES
 // ------------------------------------------------------------- 
 
 const initializeSetup2 = async () => {
@@ -197,7 +178,7 @@ const initializeSetup2 = async () => {
         },
         {
             type: "list",
-            name: "themes",
+            name: "theme",
             message: "Select theme.",
             choices: ['solarized-dark','solarized-light'],
             default: ['solarized-dark'],
@@ -205,14 +186,12 @@ const initializeSetup2 = async () => {
         },
     ]);
 
-    console.log("ANSWERS", answers)
     WL_APP_NAME = answers.appName;
     WL_BUNDLE_ID = answers.bundleId;
     WL_DISPLAY_NAME = answers.displayName;
-    WL_MODULES = answers.modules.join();
+    WL_MODULES = answers.modules;
     WL_THEME = answers.theme;
-    // console.log("\nExiting setup...");
-    // process.exit(0);
+    WL_DIR_NAME = `${WL_APP_NAME}`;
     checkForDirectoryNameConflicts();
 };
 
@@ -259,30 +238,74 @@ const checkForDirectoryNameConflicts = async () => {
 let callCloneDir = () => {
     console.log(`Cloning 'whitelabel' directory to ${WL_DIR_NAME}`);
     cloneDir(() => {
-        configureWhitelabel();
+        configureModules();
     })
-}
-// let callCopyFiles = () => {
-//     console.log(`Copying 'whitelabel' directory to ${WL_DIR_NAME}`);
-//     copyFiles(`./whitelabel`, `./${WL_DIR_NAME}`, () => {
-//         configureWhitelabel();
-//     });
-// };
+};
 
 // -------------------------------------------------------------
-// CONFIGURE APPLICATION
+// CONFIGURE APPLICATION SECTION
 // -------------------------------------------------------------
 
-// run configure script here, still written in bash
-let configureWhitelabel = async () => {
-    console.log("Configuring whitelabel");
-    try {
-        await exec(`./wl-configure.sh -a ${WL_APP_NAME} -m ${WL_MODULES} -t ${WL_THEME}`);
-        console.log(` ${BGREEN}Done!${WIPE}`);
+// ------------------------------------------------------------------------------
+//      1. CONFIGURE modules/index.js
+// ------------------------------------------------------------------------------
+
+// modules/index.js
+// import Module1 from './Module1';
+// import Module2 from './Module2';
+// ...
+// import ModuleN from './ModuleN';
+//
+// export default [Module1, Module2, ..., ModuleN];
+
+let configureModules = () => {
+    const WL_MODULES_FILE = `./${WL_DIR_NAME}/modules/index.js`;
+    const WL_MODULES_LIST = WL_MODULES;
+
+    fs.writeFile(WL_MODULES_FILE, '', () => {
+        // erase file content and re-write
+        const moduleLogger = fs.createWriteStream(WL_MODULES_FILE, {
+            flags: 'a' // 'a' means appending (old data will be preserved)
+        });
+        WL_MODULES_LIST.forEach(mod => {
+            // append string to your file
+            moduleLogger.write(`import ${mod} from './${mod}';\n`);
+        });
+
+        moduleLogger.write("\n");
+        moduleLogger.write(`export default [${WL_MODULES_LIST}];`);
+        moduleLogger.end();
+        console.log(`${BGREEN}Modules configuration complete.${WIPE}`);
+        configureTheme();
+    });
+};
+
+// ------------------------------------------------------------------------------
+//       2. CONFIGURE themes/index.js
+// ------------------------------------------------------------------------------
+
+// themes/index.js
+// const styles = require('./theme').default;
+//
+// module.exports = fileName => styles[fileName] || {};
+//
+
+let configureTheme = () => {
+    const WL_THEME_FILE = `./${WL_DIR_NAME}/themes/index.js`;
+
+    fs.writeFile(WL_THEME_FILE, '', () => {
+        // erase file content and re-write
+        const themeLogger = fs.createWriteStream(WL_THEME_FILE, {
+            flags: 'a' // 'a' means appending (old data will be preserved)
+        });
+        themeLogger.write(`const styles = require('./${WL_THEME}').default;`);
+        themeLogger.write("\n");
+        themeLogger.write(`module.exports = fileName => styles[fileName] || {};`);
+        themeLogger.end();
+        console.log(`${BGREEN}Theme configuration complete.${WIPE}`);
+
         configureDisplayName();
-    } catch(error) {
-        console.error(`${BRED}exec error: ${error}${WIPE}`);
-    }
+    });
 };
 
 // -------------------------------------------------------------
@@ -370,21 +393,19 @@ let chooseLayout = async () => {
     // if layout bottom tabs selected see the following to hide tabs when keyboard is shown
     // https://github.com/react-navigation/react-navigation-tabs/issues/64
     // https://github.com/react-navigation/react-navigation/issues/618
-    let command = '';
 
     const answers = await inquirer.prompt([
-            {
-                type: "list",
-                name: "layout",
-                message: "Choose an initial layout",
-                choices: [ 'Drawer', 'Bottom Tabs' ],
-                validate: (layouts) => {
-                    return layouts.length === 1 || "Only one layout can be selected"
-                }
-            },
-        ]);
+        {
+            type: "list",
+            name: "layout",
+            message: "Choose an initial layout",
+            choices: [ 'Drawer', 'Bottom Tabs', 'Give me everything!' ],
+            validate: (layouts) => {
+                return layouts.length === 1 || "Only one layout can be selected"
+            }
+        },
+    ]);
 
-    console.log(`Installing selected layout...`);
     if(answers.layout === 'Drawer') {
         // remove existing index.js in routes folder
         // add Drawer nav in its place and rename to index.js
@@ -403,7 +424,16 @@ let chooseLayout = async () => {
             `./${WL_DIR_NAME}/routes/index.js`,
             () => installDependencies());
     };
-}
+    if(answers.layout === 'Give me everything!') {
+        // remove existing index.js in routes folder
+        // add Tabs nav in its place and rename to index.js
+        await exec(`rm ./${WL_DIR_NAME}/routes/index.js`);
+        copyFiles(
+            `./${WL_DIR_NAME}/routers/everythingNav.js`,
+            `./${WL_DIR_NAME}/routes/index.js`,
+            () => installDependencies());
+    };
+};
 
 // ------------------------------------------------------------------------------
 // INSTALL DEPENDENCIES
@@ -413,40 +443,32 @@ let installDependencies = async () => {
 
     let command = `npm install --silent`;
     const answers = await inquirer.prompt([
-            {
-                type: "confirm",
-                name: "redux",
-                message: "Do you want to install redux? [y/n]",
-                choices: ['y','n'],
-                default: 'n',
-                validate: validateResponse
-            },
-            {
-                type: "confirm",
-                name: "stylesheet",
-                message: "Do you want to install Extended Style Sheet? [y/n]",
-                choices: ['y','n'],
-                default: 'n',
-                validate: validateResponse
-            },
-            {
-                type: "confirm",
-                name: "storage",
-                message: "Do you want to install Async Storage(community)? [y/n]",
-                choices: ['y','n'],
-                default: 'n',
-                validate: validateResponse
-            }
-        ]);
+        {
+            type: "confirm",
+            name: "redux",
+            message: "Do you want to install redux? [y/n]",
+            choices: ['y','n'],
+            default: 'n',
+            validate: validateResponse
+        },
+        {
+            type: "confirm",
+            name: "storage",
+            message: "Do you want to install Async Storage(community)? [y/n]",
+            choices: ['y','n'],
+            default: 'n',
+            validate: validateResponse
+        }
+    ]);
 
     console.log(`Installing dependencies...`);
     spinner.start();
     if(answers.redux) {command += ` && npm install --silent redux react-redux`};
-    if(answers.stylesheet) {command += ` && npm install --silent react-native-extended-stylesheet`};
     if(answers.storage) {command += ` && npm install --silent @react-native-community/async-storage`};
     try {
         await exec(` cd ${WL_DIR_NAME} && ${command}`);
         spinner.stop();
+        console.log('\n');
         figlet('\nThank you\nfor using\nRN-App-Generator', function(err, data) {
             if (err) {
                 console.log('Something went wrong...');
