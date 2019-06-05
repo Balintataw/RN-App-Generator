@@ -13,7 +13,7 @@ configurations can be generated.
 
 To start using and customize the white-label app, do the following
 
-1. Install dependencies with `yarn install`;
+1. Install dependencies with `npm install`;
 2. Add/modify modules in `whitelabel/modules` (see [Modules](#modules));
 3. Add/modify themes in `whitelabel/theme` (see [Themes](#themes));
 4. Configure the application (see [White-label configuration](#white-label-configuration));
@@ -21,11 +21,11 @@ To start using and customize the white-label app, do the following
 
 __N.B.: You must configure the application at least once for it to work!__
 
-## The white-label project
+## The React Native CLI project
 
-The white-label project is a modular React Native application. It features
-modules and themes personalization. The white-label app is contained in the
-`white-label` directory.
+This project is a modular React Native application. It features
+modules and themes personalization. The app is contained in the
+`white-label` directory for now.
 
 ### Modules
 

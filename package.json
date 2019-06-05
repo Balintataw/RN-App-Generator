@@ -24,9 +24,11 @@
   "homepage": "https://github.com/Balintataw/RN-App-Generator#readme",
   "dependencies": {
     "cli-spinner": "^0.2.10",
+    "figlet": "^1.2.3",
     "fs-extra": "^7.0.1",
     "inquirer": "^6.3.1",
     "replace-in-file": "^4.0.0",
+    "simple-git": "^1.113.0",
     "yargs": "^13.2.2"
   }
 }
