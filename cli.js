@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 // TODOS
-// Clone to parent directory or give an option
 // Remove dead or unused files after completion
 // Update help menu 
 const fs = require('fs-extra');
@@ -13,6 +12,15 @@ const Spinner = require('cli-spinner').Spinner;
 const inquirer = require('inquirer');
 const git = require('simple-git/promise');
 const figlet = require('figlet');
+// const readline = require('readline');  
+// const readInterface = readline.createInterface({  
+//     input: fs.createReadStream('/path/to/file'),
+//     output: process.stdout,
+//     console: false
+// });
+// readInterface.on('line', function(line) {  
+//     console.log(line);
+// });
 
 const REMOTE = 'git@github.com:Balintataw/RN-App-Generator-Whitelabel.git';
 const BGREEN = '\033[1;32m'   // BoldGreen
@@ -145,7 +153,7 @@ if (!!HELP) {help()}
 //  GET USER DEFINED VARIABLES
 // ------------------------------------------------------------- 
 
-const initializeSetup2 = async () => {
+const initializeSetup = async () => {
     const answers = await inquirer.prompt([
         {
             type: "input",
@@ -483,4 +491,4 @@ let installDependencies = async () => {
     }
 };
 
-initializeSetup2();
+initializeSetup();
